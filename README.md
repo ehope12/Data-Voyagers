@@ -11,10 +11,13 @@ Our website allows users to define a target location, receive notifications when
 ### Dependencies
 
 * Requests (Google Geocoding API)
+Backend:
 * Flask
-* NodeJS
 * Selenium
 * BS4
+Frontend:
+* NodeJS
+* Axios
 
 ### Installing
 
