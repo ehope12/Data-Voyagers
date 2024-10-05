@@ -29,4 +29,15 @@ def next_overpass():
 
 @landsat_bp.route('/setup_notification', methods=['POST'])
 def setup_notification_route():
-    return setup_notification()
+    try:
+        data = request.get_json()
+        latitude = float(data['latitude'])
+        longitude = float(data['longitude'])
+        landsat_number = int(data['landsat_number'])
+        notification_lead_time_minutes = int(data['notification_lead_time_minutes'])
+        notification_method = data['notification_method']
+
+        result = setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
