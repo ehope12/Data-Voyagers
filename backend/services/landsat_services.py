@@ -30,7 +30,9 @@ def get_tle_from_celestrak(catalog_number):
         raise Exception(f"Failed to retrieve TLE data. Status Code: {response.status_code}")
 
 # Existing calculate_next_overpass function
-def calculate_next_overpass(latitude, longitude, landsat_number):
+def calculate_next_overpass(latitude, longitude, landsat_number, start_time = datetime.now(tz=timezone.utc), end_time = -1):
+    if (end_time == -1):
+        end_time = start_time + timedelta(days=COVERAGE_OF_EARTH_IN_DAYS)
     altitude_degrees = 90 - math.degrees(math.atan((180 / 2) / 705))
     
     try:
@@ -45,8 +47,8 @@ def calculate_next_overpass(latitude, longitude, landsat_number):
         ts = load.timescale()
         satellite = EarthSatellite(tle_line_1, tle_line_2, f"Landsat {landsat_number}", ts)
         observer = Topos(latitude_degrees=latitude, longitude_degrees=longitude)
-        t0 = ts.utc(datetime.now(tz=timezone.utc))
-        t1 = t0 + timedelta(days=COVERAGE_OF_EARTH_IN_DAYS)
+        t0 = start_time
+        t1 = end_time
         t, is_visible = satellite.find_events(observer, t0, t1, altitude_degrees=altitude_degrees)
 
         for ti, event_type in zip(t, is_visible):
