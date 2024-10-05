@@ -1,17 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 import requests
-from dotenv import load_dotenv
 import os
-from flask_cors import CORS
 
-app = Flask(__name__)
+geocode_bp = Blueprint('geocode_bp', __name__)
 
-CORS(app)
-
-load_dotenv()
 API_KEY = os.getenv('API_KEY')
 
-@app.route('/geocode', methods=['POST'])
+@geocode_bp.route('/geocode', methods=['POST'])
 def get_geo_coord():
     data = request.get_json()
     input_value = data.get('input', 'Chicago')
@@ -34,6 +29,3 @@ def get_geo_coord():
         }), 200
     else:
         return jsonify({'error': 'Geocoding failed'}), 400
-
-if __name__ == '__main__':
-    app.run(debug=True)
