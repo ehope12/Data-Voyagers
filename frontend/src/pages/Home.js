@@ -14,7 +14,7 @@ const Home = () => {
         e.preventDefault();
         
         try {
-            const response = await fetch('http://localhost:5000/geocode', {
+            const response = await fetch('http://localhost:5000/geocode/geocode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
