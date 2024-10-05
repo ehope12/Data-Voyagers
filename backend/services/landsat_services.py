@@ -31,13 +31,13 @@ def get_tle_from_celestrak(catalog_number):
 
 # Existing calculate_next_overpass function
 def calculate_next_overpass(latitude, longitude, landsat_number):
+    altitude_degrees = 90 - math.degrees(math.atan((180 / 2) / 705))
+    
     try:
         if landsat_number == 8:
             catalog_number = LANDSAT_8_CATALOG_NUM
-            altitude_degrees = 90 - math.degrees(math.atan((180 / 2) / 705))
         elif landsat_number == 9:
             catalog_number = LANDSAT_9_CATALOG_NUM
-            altitude_degrees = 90 - math.degrees(math.atan((115 / 2) / 438))
         else:
             raise ValueError("Invalid Landsat number. Please select 8 or 9.")
 
