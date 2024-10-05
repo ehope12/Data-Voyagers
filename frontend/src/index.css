@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* .bg-space {
+  background-image: url('/path/to/your/space-background.jpg'); /* Update with your image path 
+  background-size: cover;
+  background-position: center;
+} */
