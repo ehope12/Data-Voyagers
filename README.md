@@ -15,6 +15,8 @@ Backend:
 * Flask
 * Selenium
 * BS4
+* Skyfield
+* Plyer
 Frontend:
 * NodeJS
 * Axios
