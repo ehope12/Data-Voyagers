@@ -5,6 +5,7 @@ import bgimg from "../assets/bgimg.png";
 const Home = () => {
     const [inputValue, setInputValue] = useState('');
     const [outputValue, setOutputValue] = useState('');
+    const [notificationMethod, setNotificationMethod] = useState('');
     const [latLon, setLatLon] = useState('');
 
     const [timeUnit, setTimeUnit] = useState('');
@@ -15,6 +16,9 @@ const Home = () => {
     
     const handleTimeUnitChange = (e) => {
         setTimeUnit(e.target.value);
+    };
+    const handleNotificationMethodChange = (e) => {
+        setNotificationMethod(e.target.value);
     };
 
     const handleSubmit = async (e) => {
@@ -90,7 +94,6 @@ const Home = () => {
                 )}
             </div>
         
-    
             {/* Output Section 1 */}
             <div id="input-section" className="bg-green-400 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 <form onSubmit={handleSubmit}>
@@ -101,18 +104,15 @@ const Home = () => {
                     
                 </form>
             </div>
-               
 
         {/* Input Section 2 */}
         <div id="input-section" className="bg-gray-800 rounded-lg p-6  shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
            <form onSubmit={handleSubmit}>
             <label className="block ">
                 <span className="text-lg text-white">Enter Your Space Data:</span> 
-    
              </label> 
-            
         
-            {/* Input Section with Plain Input Field and Dropdown */}
+            {/* Input Section with Float Input Field and 2 Dropdowns*/}
             <div id="input-section" className="bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 <form onSubmit={handleSubmit}>
                     {/* Plain Input Field */}
@@ -127,8 +127,6 @@ const Home = () => {
                         />
                     </label>
 
-                    
-
                     {/* Dropdown for Time Unit */}
                     <label className="block mb-4">
                         <span className="text-lg text-white">Select Time Unit:</span>
@@ -136,8 +134,9 @@ const Home = () => {
                             value={timeUnit}
                             onChange={handleTimeUnitChange}
                             className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                            
                         >
-                            <option value="" disabled>Select a time unit</option>
+                            <option value="" disabled >Select a time unit</option>
                             <option value="hours">Hours</option>
                             <option value="days">Days</option>
                             <option value="weeks">Weeks</option>
@@ -145,6 +144,22 @@ const Home = () => {
                             <option value="years">Years</option>
                         </select>
                     </label>
+                        {/* Dropdown for Notification Method */}
+                    <label className="block mb-4">
+                        <span className="text-lg text-white">How would you like to receive notifications?</span>
+                        <select
+                            value={notificationMethod}
+                            onChange={handleNotificationMethodChange}
+                            className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                            style={{ position: 'relative', zIndex: 10 }}
+                        >
+                            <option className="" value="" disabled>Select a notification method</option>
+                            <option value="email">Email</option>
+                            <option value="sms">SMS</option>
+                            <option value="push">Push Notification</option>
+                        </select>
+                    </label>
+                    
                     </form>
                     <button
                 type="submit"
