@@ -100,26 +100,6 @@ def calculate_next_overpass(latitude, longitude, landsat_number, start_time=None
     except Exception as e:
         raise RuntimeError(f"Error calculating overpass: {e}")
 
-# Function to send a notification
-# def send_notification(email, landsat_number, overpass_time, notification_method):
-#     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
-#     subject = f"Landsat {landsat_number} Overpass Alert"
-#     message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
-
-#     # Send Desktop notification
-#     if notification_method == "Desktop" or notification_method == "Both":
-#         notification.notify(
-#             title=subject,
-#             message=message,
-#             timeout=10
-#         )
-
-#     # Send Email notification
-#     if notification_method == "Email" or notification_method == "Both":
-#         msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
-#         msg.body = message
-#         mail.send(msg)
-#         print("Email notification sent successfully.")
 
 def send_notification(landsat_number, overpass_time, notification_method):
     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
@@ -381,7 +361,18 @@ def get_bandwise_surface_reflectance(files):
     
     
     
-    
+def sr_grid_to_3x3(array, dateString, target_path, target_row):
+    output = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]]
+    for i in range(3):
+        for j in range(3):
+            if (array[i, j] != -1):
+                path = target_path + i - 1
+                row = target_row + j - 1
+                folder_urlpt1, endTime = get_loc_path("Custom Range", -1, dateString, path,row)
+                folder_urlpt2,  = find_closest_folder(folder_urlpt1, endTime)
+                files = get_files(folder_urlpt1, folder_urlpt2)
+                output[i, j] = get_approx_sr(files)
+    return output
     
     
     
