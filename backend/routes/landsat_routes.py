@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from services.landsat_services import calculate_next_overpass, setup_notification
 
 landsat_bp = Blueprint('landsat_bp', __name__)
@@ -19,13 +20,15 @@ def next_overpass():
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
 
-        # Calculate the next overpass time (you may want to use start_date, end_date in the calculation)
+        # Calculate the next overpass time
         next_overpass_time = calculate_next_overpass(latitude, longitude, landsat_number, start_date, end_date)
+        print("Next Overpass Time:", next_overpass_time)  # Debugging line
 
-        if next_overpass_time:
+        # Ensure that next_overpass_time is a valid datetime object
+        if next_overpass_time and isinstance(next_overpass_time, datetime):
             return jsonify({
                 'success': True,
-                'next_overpass_time': next_overpass_time.strftime('%Y-%m-%d %H:%M:%S UTC')
+                'next_overpass_time': next_overpass_time.isoformat() + 'Z'  # Use ISO format
             })
         else:
             return jsonify({
@@ -46,7 +49,7 @@ def setup_notification_route():
         latitude = float(data['latitude'])
         longitude = float(data['longitude'])
         landsat_number = int(data['landsat_number'])
-        # notification_lead_time_minutes = int(data['notification_lead_time_minutes'])
+        
         time_unit = data.get('timeUnit', 'minutes')
         lead_time_value = int(data.get('lead_time_value', 0))
         if time_unit == 'hours':
@@ -55,10 +58,20 @@ def setup_notification_route():
             notification_lead_time_minutes = lead_time_value * 1440
         else:
             notification_lead_time_minutes = lead_time_value
+        
         notification_method = data['notification_method']
         email = data.get('email')
 
         result = setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method, email)
+        
+        # Return next_overpass_time if available
+        if result.get('success') and 'next_overpass_time' in result:
+            return jsonify({
+                'success': True,
+                'message': result['message'],
+                'next_overpass_time': result['next_overpass_time']  # Use the correct key
+            })
         return jsonify(result)
+        
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
