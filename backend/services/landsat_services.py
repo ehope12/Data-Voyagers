@@ -19,6 +19,33 @@ COVERAGE_OF_EARTH_IN_DAYS = 16
 EMAIL_SENDER = "landsat.notification@gmail.com"
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_RECEIVER = "flameisntlame@gmail.com"
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use Gmail SMTP server
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USERNAME'] = os.getenv('EMAIL_SENDER')  # Your email
+# app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')  # Your email password (use environment variable)
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+
+def send_email_notification(email, landsat_number, overpass_time, notification_method):
+    local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
+    subject = f"Landsat {landsat_number} Overpass Alert"
+    message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+
+    # Send Desktop notification
+    if notification_method == "Desktop" or notification_method == "Both":
+        notification.notify(
+            title=subject,
+            message=message,
+            timeout=10
+        )
+
+    # Send Email notification
+    if notification_method == "Email" or notification_method == "Both":
+        msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
+        msg.body = message
+        mail.send(msg)
+        print("Email notification sent successfully.")
+
 
 # Function to get GP data (TLE) from CelesTrak for a given catalog number
 def get_tle_from_celestrak(catalog_number):
@@ -35,9 +62,15 @@ def get_tle_from_celestrak(catalog_number):
         raise Exception(f"Failed to retrieve TLE data. Status Code: {response.status_code}")
 
 # Existing calculate_next_overpass function
-def calculate_next_overpass(latitude, longitude, landsat_number, start_time = datetime.now(tz=timezone.utc), end_time = -1):
-    if (end_time == -1):
+def calculate_next_overpass(latitude, longitude, landsat_number, start_time=None, end_time=None):
+    # Use current time if start_time is not provided
+    if start_time is None:
+        start_time = datetime.now(tz=timezone.utc)
+    
+    # Set end_time to a default if it is not provided
+    if end_time is None:
         end_time = start_time + timedelta(days=COVERAGE_OF_EARTH_IN_DAYS)
+
     altitude_degrees = 90 - math.degrees(math.atan((180 / 2) / 705))
     
     try:
@@ -66,6 +99,26 @@ def calculate_next_overpass(latitude, longitude, landsat_number, start_time = da
         raise RuntimeError(f"Error calculating overpass: {e}")
 
 # Function to send a notification
+# def send_notification(email, landsat_number, overpass_time, notification_method):
+#     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
+#     subject = f"Landsat {landsat_number} Overpass Alert"
+#     message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+
+#     # Send Desktop notification
+#     if notification_method == "Desktop" or notification_method == "Both":
+#         notification.notify(
+#             title=subject,
+#             message=message,
+#             timeout=10
+#         )
+
+#     # Send Email notification
+#     if notification_method == "Email" or notification_method == "Both":
+#         msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
+#         msg.body = message
+#         mail.send(msg)
+#         print("Email notification sent successfully.")
+
 def send_notification(landsat_number, overpass_time, notification_method):
     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
     

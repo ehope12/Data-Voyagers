@@ -11,14 +11,35 @@ const CloudCoverageFilter = () => {
         event.preventDefault(); // Prevent page reload on form submit
         console.log(`Filtering data with cloud coverage less than ${threshold}%`);
         // Add your logic to fetch or filter the data based on this threshold
-        
-    
+    // Construct the data to send to the backend
+    const requestData = {
+        threshold, // Include the threshold in the request
     };
 
-
-
-
-
+    console.log(`Filtering data with cloud coverage less than ${threshold}%`);
+    
+    // Send the data to your backend
+    fetch('http://localhost:5000/api/landsat-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData), // Convert the request data to JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse the JSON from the response
+    })
+    .then(data => {
+        console.log('Response from backend:', data); // Handle the response from the backend
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error); // Handle any errors
+    });
+    
+    };
 
     return (
         <div className="max-w-md mx-auto p-4">
