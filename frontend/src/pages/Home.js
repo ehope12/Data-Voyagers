@@ -49,7 +49,7 @@ const Home = () => {
 
         const payload = {
             // date: date.toISOString(),
-            data: "2020-07-09T13:35:23.000Z", // Default data for now
+            date: "2020-07-09T13:35:23.000Z", // Default data for now
             notificationMethod,
             timeUnit,
             inputValue,
