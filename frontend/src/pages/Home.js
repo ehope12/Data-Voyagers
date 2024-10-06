@@ -6,6 +6,7 @@ import LandsatAcquisitionFilter from '../components/LandsatAquisition filter';
 import SpectralSignatureChart from '../components/SpectralSignatureChart';
 import NotificationSystem from '../components/NotificationSystem';
 import { ToastContainer } from 'react-toastify';
+import LandsatDataDisplay from '../components/LandsatDataDisplay';
 
 const Home = () => {
      // Initialize with placeholder data
@@ -313,6 +314,7 @@ const Home = () => {
         </div>
 
     {/* point 11 - Allow users to download or share data in a useful format (e.g., csv). */}
+    <LandsatDataDisplay/>
      </div>
 
     );
