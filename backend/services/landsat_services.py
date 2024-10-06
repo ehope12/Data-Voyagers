@@ -340,6 +340,44 @@ def get_approx_sr(files):
         return None
     
     
+def get_bandwise_surface_reflectance(files):
+    """
+    Takes in 7 TIF files representing different bands of surface reflectance for a specific scene,
+    and returns a dictionary with band names as keys and average surface reflectance values as values.
+
+    Args:
+        files (list): List of paths to 7 TIF files containing surface reflectance data.
+
+    Returns:
+        dict: Dictionary where keys are band names (e.g., 'SR_B1') and values are the average
+              surface reflectance for each band.
+    """
+    bandwise_reflectance = {}
+
+    try:
+        for file in files:
+            # Extract band name from the file name
+            band_name = file.split('/')[-1].split('_')[-2]  # Gets the part like "SR_B1" 
+
+            with rasterio.open(file) as src:
+                # Read the data from the file into an array
+                data = src.read(1)
+
+                # Mask out NoData values (assuming negative values or values greater than 10000 are NoData)
+                masked_data = np.where((data < 0) | (data > 10000), np.nan, data)
+
+                # Calculate the mean reflectance for this band
+                band_mean = np.nanmean(masked_data)
+
+                # Add the band name and its mean value to the dictionary
+                bandwise_reflectance[band_name] = band_mean
+
+        return bandwise_reflectance
+
+    except Exception as e:
+        print(f"An error occurred while calculating bandwise surface reflectance: {e}")
+        return None
+    
     
     
     
