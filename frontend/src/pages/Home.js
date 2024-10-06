@@ -147,7 +147,11 @@ const Home = () => {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center text-black">
-            <img src={bgimg} alt="placeholder" className="pb-10"></img>
+            <img 
+                src={bgimg} 
+                alt="placeholder" 
+                className="w-full h-[30vh] object-cover" // Adjust height as needed (30% of viewport height)
+            />
             <div className="bg-space bg-cover bg-center py-16 flex flex-col justify-center items-center text-center px-5 md:px-10 lg:px-20">
                 <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Landsat Reflectance Data!</h1>
                 <p className="text-lg md:text-xl mb-8 drop-shadow-lg">On the fly and at your fingertips.</p>
