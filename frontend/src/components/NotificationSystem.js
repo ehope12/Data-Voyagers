@@ -130,8 +130,8 @@ const NotificationSystem = () => {
 
             {outputValue && (
                 <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                    <h2 className="text-xl font-bold">Output:</h2>
-                    <p className="mt-2">{outputValue}</p>
+                    <h2 className="text-xl font-bold text-white">Output:</h2>
+                    <p className="mt-2 text-white">{outputValue}</p>
                 </div>
             )}
             <ToastContainer /> {/* Add ToastContainer here */}

@@ -188,7 +188,7 @@ const Home = () => {
                                 type="text"
                                 value={inputValue}
                                 onChange={handleInputChange}
-                                className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                                className="text-white mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                                 placeholder="Type here..."
                             />
                         </label>
@@ -209,7 +209,7 @@ const Home = () => {
                                 type="text"
                                 value={latValue}
                                 onChange={handleLatChange}
-                                className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                                className="text-white mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                                 placeholder="Enter latitude..."
                             />
                         </label>
@@ -219,7 +219,7 @@ const Home = () => {
                                 type="text"
                                 value={lonValue}
                                 onChange={handleLonChange}
-                                className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                                className="text-white mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                                 placeholder="Enter longitude..."
                             />
                         </label>
@@ -240,7 +240,7 @@ const Home = () => {
                         {/* Display Pin Coordinates */}
                         {pinCoordinates && (
                             <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                                <h2 className="text-xl font-bold text-white">Coordinates:</h2>
+                                <h2 className="text-xl font-bold text-white">Gathering Path and Row From</h2>
                                 <p className="mt-2 text-white">
                                     Latitude: {pinCoordinates.lat}, Longitude: {pinCoordinates.lng}
                                 </p>
@@ -252,14 +252,14 @@ const Home = () => {
                 {/* Output */}
                 {outputValue && (
                     <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold">Output:</h2>
-                        <p className="mt-2">{outputValue}</p>
+                        <h2 className="text-xl font-bold text-white">Gathering Path and Row From</h2>
+                        <p className="mt-2 text-white">{outputValue}</p>
                     </div>
                 )}
                 {latLon && (
                     <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold">Coordinates:</h2>
-                        <p className="mt-2">{latLon}</p>
+                        <h2 className="text-xl font-bold text-white">Gathering Path and Row From</h2>
+                        <p className="mt-2 text-white">{latLon}</p>
                     </div>
                 )}
             </div>
