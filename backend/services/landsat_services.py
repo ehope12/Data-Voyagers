@@ -295,12 +295,47 @@ def get_files(loc_path, file_path):
         sr_file = file + "_SR_B" + str(i) + ".TIF"
         files.append(sr_file)
     
-    st_file = file + "_ST_B10.TIF"
-    files.append(st_file)
+    # st_file = file + "_ST_B10.TIF"
+    # files.append(st_file)
 
     return files
     
+def get_approx_sr(files):
+    """
+    Takes in 7 TIF files representing different bands of surface reflectance for a specific scene,
+    and returns an approximate surface reflectance as an integer.
+
+    Args:
+        files (list): List of paths to 7 TIF files containing surface reflectance data.
     
+    Returns:
+        int: The approximate average surface reflectance value for the scene.
+    """
+    try:
+        reflectance_values = []
+
+        # Iterate through each file to read and compute average reflectance
+        for file in files:
+            with rasterio.open(file) as src:
+                # Read the data from the file into an array
+                data = src.read(1)
+
+                # Mask out NoData values (assuming negative values or values greater than 10000 are NoData)
+                masked_data = np.where((data < 0) | (data > 10000), np.nan, data)
+
+                # Calculate the mean reflectance for this band and append it
+                band_mean = np.nanmean(masked_data)
+                reflectance_values.append(band_mean)
+
+        # Calculate the overall average reflectance across all bands
+        overall_average = np.nanmean(reflectance_values)
+
+        # Return the overall average rounded to the nearest integer
+        return int(round(overall_average))
+
+    except Exception as e:
+        print(f"An error occurred while calculating surface reflectance: {e}")
+        return None
     
     
     
