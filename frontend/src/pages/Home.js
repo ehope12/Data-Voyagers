@@ -4,6 +4,8 @@ import ImageCarousel from '../components/ImageCarousel';
 import CloudCoverageFilter from '../components/CloudCoverageFilter';
 import LandsatAcquisitionFilter from '../components/LandsatAquisition filter';
 import SpectralSignatureChart from '../components/SpectralSignatureChart';
+import NotificationSystem from '../components/NotificationSystem';
+import { ToastContainer } from 'react-toastify';
 
 const Home = () => {
      // Initialize with placeholder data
@@ -29,25 +31,14 @@ const Home = () => {
     const [latValue, setLatValue] = useState('');
     const [lonValue, setLonValue] = useState('');
     const [outputValue, setOutputValue] = useState('');
-    const [notificationMethod, setNotificationMethod] = useState('');
     const [latLon, setLatLon] = useState('');
     const [selectedOption, setSelectedOption] = useState('Location Input');
     const [pinCoordinates, setPinCoordinates] = useState(null);
-    const [email, setEmail] = useState('');
 
     const mapRef = useRef(null);
 
-    const [timeUnit, setTimeUnit] = useState('');
-
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
-    };
-    
-    const handleTimeUnitChange = (e) => {
-        setTimeUnit(e.target.value);
-    };
-    const handleNotificationMethodChange = (e) => {
-        setNotificationMethod(e.target.value);
     };
 
     const handleLatChange = (e) => {
@@ -62,38 +53,6 @@ const Home = () => {
         setSelectedOption(e.target.value);
         setOutputValue('');
         setLatLon('');
-    };
-
-    const handleNotificationSubmit = async (e) => {
-        e.preventDefault();
-
-        const payload = {
-            // date: date.toISOString(),
-            date: "2020-07-09T13:35:23.000Z", // Default data for now
-            notificationMethod,
-            timeUnit,
-            inputValue,
-            latitude: latValue,
-            longitude: lonValue,
-            landsat_number: 9, // ADJUST THIS
-            email: email,
-        };
-
-        try {
-            const response = await fetch('http://localhost:5000/landsat/setup_notification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await response.json();
-            setOutputValue(data.message || 'Notification setup successfully!');
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            setOutputValue('Error submitting notification setup.');
-        }
     };
 
     const handleSubmit = async (e) => {
@@ -319,90 +278,7 @@ const Home = () => {
             </div>
 
         {/* Input Section 2 */}
-        <div id="input-section" className="relative z-10 bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
-            <form onSubmit={handleNotificationSubmit}>
-                {/* Calendar (DatePicker) */}
-                {/* <label className="block mb-4">
-                    <span className="text-lg text-white">Select Notification Date & Time:</span>
-                    <DatePicker
-                        selected={date}
-                        onChange={handleDateChange}
-                        showTimeSelect
-                        dateFormat="Pp"
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                    />
-                </label> */}
-
-                {/* Plain Input Field */}
-                {/* <label className="block mb-4">
-                    <span className="text-lg text-white">Enter a Value:</span>
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                        placeholder="Enter a value..."
-                    />
-                </label> */}
-
-                {/* Dropdown for Time Unit */}
-                {/* <label className="block mb-4">
-                    <span className="text-lg text-white">Select Time Unit:</span>
-                    <select
-                        value={timeUnit}
-                        onChange={(e) => setTimeUnit(e.target.value)}
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                    >
-                        <option value="" disabled>Select a time unit</option>
-                        <option value="hours">Hours</option>
-                        <option value="days">Days</option>
-                        <option value="weeks">Weeks</option>
-                        <option value="months">Months</option>
-                        <option value="years">Years</option>
-                    </select>
-                </label> */}
-
-                {/* Dropdown for Notification Method */}
-                <label className="block mb-4">
-                    <span className="text-lg text-white">How would you like to receive notifications?</span>
-                    <select
-                        value={notificationMethod}
-                        onChange={(e) => setNotificationMethod(e.target.value)}
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                    >
-                        <option value="" disabled>Select a notification method</option>
-                        <option value="Email">Email</option>
-                        <option value="Desktop">Desktop</option>
-                        <option value="Both">Both</option>
-                    </select>
-                </label>
-
-                <label className="block mb-4">
-                    <span className="text-lg text-white">Email Address:</span>
-                    <input
-                        type="email"
-                        value={email} // Assuming you have a state variable for email
-                        onChange={(e) => setEmail(e.target.value)} // Assuming setEmail is your state setter
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                        required
-                    />
-                </label>
-
-                <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full transition duration-300"
-                >
-                    Submit
-                </button>
-            </form>
-
-            {outputValue && (
-                <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                    <h2 className="text-xl font-bold">Output:</h2>
-                    <p className="mt-2">{outputValue}</p>
-                </div>
-            )}
-        </div>
+       {/* Deleted the notification input */}
    <div className="py-10 w-full">
    <ImageCarousel />
    </div>
@@ -422,6 +298,9 @@ const Home = () => {
 
    {/* point 7 - Permit users to specify whether they want access to only the most recent Landsat acquisition or acquisitions spanning a particular time span. */}
     <LandsatAcquisitionFilter/>
+
+    <NotificationSystem/>
+    {/* <ToastContainer /> */}
 
     {/* point 8 - Acquire scene metadata such as acquisition satellite, date, time, latitude/longitude, Worldwide Reference System path and row, percent cloud cover, and image quality. */}
 

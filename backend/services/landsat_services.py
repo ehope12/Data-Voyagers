@@ -7,13 +7,53 @@ from email.mime.text import MIMEText
 from plyer import notification
 import os
 import smtplib
+<<<<<<< HEAD
+from flask import Flask
+from flask_mail import Message, Mail
+from dotenv import load_dotenv
+
+app = Flask(__name__)
+load_dotenv()
+
+mail = Mail(app)
+=======
+import subprocess
+import re
+>>>>>>> 3bca881be83faca4a19ef6c6cdeb0f8021c5bf32
 
 LANDSAT_9_CATALOG_NUM = 49260
 LANDSAT_8_CATALOG_NUM = 39084
 COVERAGE_OF_EARTH_IN_DAYS = 16
-EMAIL_SENDER = "landsat.notification@gmail.com"
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-EMAIL_RECEIVER = "flameisntlame@gmail.com"
+# EMAIL_SENDER = "landsat.notification@gmail.com"
+# EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+# EMAIL_RECEIVER = "flameisntlame@gmail.com"
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use Gmail SMTP server
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.getenv('EMAIL_SENDER')  # Your email
+app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')  # Your email password (use environment variable)
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+def send_email_notification(email, landsat_number, overpass_time, notification_method):
+    local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
+    subject = f"Landsat {landsat_number} Overpass Alert"
+    message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+
+    # Send Desktop notification
+    if notification_method == "Desktop" or notification_method == "Both":
+        notification.notify(
+            title=subject,
+            message=message,
+            timeout=10
+        )
+
+    # Send Email notification
+    if notification_method == "Email" or notification_method == "Both":
+        msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
+        msg.body = message
+        mail.send(msg)
+        print("Email notification sent successfully.")
+
 
 # Function to get GP data (TLE) from CelesTrak for a given catalog number
 def get_tle_from_celestrak(catalog_number):
@@ -30,9 +70,15 @@ def get_tle_from_celestrak(catalog_number):
         raise Exception(f"Failed to retrieve TLE data. Status Code: {response.status_code}")
 
 # Existing calculate_next_overpass function
-def calculate_next_overpass(latitude, longitude, landsat_number, start_time = datetime.now(tz=timezone.utc), end_time = -1):
-    if (end_time == -1):
+def calculate_next_overpass(latitude, longitude, landsat_number, start_time=None, end_time=None):
+    # Use current time if start_time is not provided
+    if start_time is None:
+        start_time = datetime.now(tz=timezone.utc)
+    
+    # Set end_time to a default if it is not provided
+    if end_time is None:
         end_time = start_time + timedelta(days=COVERAGE_OF_EARTH_IN_DAYS)
+
     altitude_degrees = 90 - math.degrees(math.atan((180 / 2) / 705))
     
     try:
@@ -61,31 +107,51 @@ def calculate_next_overpass(latitude, longitude, landsat_number, start_time = da
         raise RuntimeError(f"Error calculating overpass: {e}")
 
 # Function to send a notification
-def send_notification(landsat_number, overpass_time, notification_method):
+def send_notification(email, landsat_number, overpass_time, notification_method):
     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
-    
+    subject = f"Landsat {landsat_number} Overpass Alert"
+    message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+
+    # Send Desktop notification
     if notification_method == "Desktop" or notification_method == "Both":
         notification.notify(
-            title=f"Landsat {landsat_number} Overpass Alert",
-            message=f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time).",
+            title=subject,
+            message=message,
             timeout=10
         )
-    
-    if notification_method == "Email" or notification_method == "Both":
-        try:
-            subject = f"Landsat {landsat_number} Overpass Alert"
-            body = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
-            msg = MIMEText(body)
-            msg['Subject'] = subject
-            msg['From'] = EMAIL_SENDER
-            msg['To'] = EMAIL_RECEIVER
 
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-                server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-                server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
-            print("Email notification sent successfully.")
-        except Exception as e:
-            print(f"Failed to send email notification: {e}")
+    # Send Email notification
+    if notification_method == "Email" or notification_method == "Both":
+        msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
+        msg.body = message
+        mail.send(msg)
+        print("Email notification sent successfully.")
+
+# def send_notification(landsat_number, overpass_time, notification_method):
+#     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
+    
+#     if notification_method == "Desktop" or notification_method == "Both":
+#         notification.notify(
+#             title=f"Landsat {landsat_number} Overpass Alert",
+#             message=f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time).",
+#             timeout=10
+#         )
+    
+#     if notification_method == "Email" or notification_method == "Both":
+#         try:
+#             subject = f"Landsat {landsat_number} Overpass Alert"
+#             body = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+#             msg = MIMEText(body)
+#             msg['Subject'] = subject
+#             msg['From'] = EMAIL_SENDER
+#             msg['To'] = EMAIL_RECEIVER
+
+#             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+#                 server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+#                 server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
+#             print("Email notification sent successfully.")
+#         except Exception as e:
+#             print(f"Failed to send email notification: {e}")
 
 # Function to set up a notification for the next overpass
 def setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method, email):
@@ -119,3 +185,57 @@ def setup_notification(latitude, longitude, landsat_number, notification_lead_ti
             'success': False,
             'error': str(e)
         }
+
+
+def find_closest_folder(folder_url, end_date):
+    """
+    Finds the folder within the specified S3 URL that has the acquisition date closest to 
+    (but not after) the provided end date.
+
+    Args:
+        folder_url (str): The URL to the S3 folder containing the Landsat acquisitions.
+        end_date (datetime): The latest allowable acquisition date.
+
+    Returns:
+        str: The name of the folder closest to the end date, or an error message if not found.
+    """
+    try:
+        # Run the AWS CLI command to list all folders in the directory
+        command = f"aws s3 ls {folder_url} --request-payer requester"
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            raise Exception(f"Error listing folder contents: {result.stderr}")
+
+        # Extract all folders and their acquisition dates
+        lines = result.stdout.splitlines()
+        folder_names = []
+        date_folder_mapping = {}
+
+        date_pattern = re.compile(r'LC\d{2}_L\d\w+_(\d{6})(\d{2})_\d{8}_\d{2}_T1')
+        
+        for line in lines:
+            if line.endswith('/'):
+                folder_name = line.split()[-1]
+                match = date_pattern.search(folder_name)
+                if match:
+                    date_str = match.group(1)
+                    acquisition_date = datetime.strptime(date_str, "%Y%m%d")
+                    folder_names.append(folder_name)
+                    date_folder_mapping[acquisition_date] = folder_name
+
+        # Filter folders with dates before or equal to the end_date
+        valid_dates = [date for date in date_folder_mapping.keys() if date <= end_date]
+
+        if not valid_dates:
+            return "No valid folder found before or on the given end date."
+
+        # Find the closest date to the end_date
+        closest_date = max(valid_dates)
+
+        # Return the folder name corresponding to the closest date
+        closest_folder = date_folder_mapping[closest_date]
+        return closest_folder
+
+    except Exception as e:
+        return str(e)
