@@ -6,11 +6,22 @@ landsat_bp = Blueprint('landsat_bp', __name__)
 @landsat_bp.route('/next_overpass', methods=['GET'])
 def next_overpass():
     try:
+        # Extract latitude, longitude, and landsat number from request parameters
         latitude = float(request.args.get('latitude'))
         longitude = float(request.args.get('longitude'))
         landsat_number = int(request.args.get('landsat_number'))
 
-        next_overpass_time = calculate_next_overpass(latitude, longitude, landsat_number)
+        # Extract start and end dates from request parameters, if provided
+        start_date_str = request.args.get('start_date')
+        end_date_str = request.args.get('end_date')
+
+        # Convert start and end dates from string to datetime objects
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
+
+        # Calculate the next overpass time (you may want to use start_date, end_date in the calculation)
+        next_overpass_time = calculate_next_overpass(latitude, longitude, landsat_number, start_date, end_date)
+
         if next_overpass_time:
             return jsonify({
                 'success': True,
@@ -21,6 +32,7 @@ def next_overpass():
                 'success': False,
                 'message': 'Unable to determine the next overpass time.'
             })
+
     except Exception as e:
         return jsonify({
             'success': False,
