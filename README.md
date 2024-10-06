@@ -37,6 +37,8 @@ Emily Hsieh [@EmilyHsieh](https://www.linkedin.com/in/emily-hsieh-6323bb23b/)
 
 Kshitij Jalan [@KshitijJalan](https://www.linkedin.com/in/kshitij-jalan)
 
+Sohum Shah [@SohumShah](https://www.linkedin.com/in/sohum1094/)
+
 ## Version History
 
 * 0.1
