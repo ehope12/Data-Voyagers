@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 from plyer import notification
 import os
 import smtplib
+<<<<<<< HEAD
 from flask import Flask
 from flask_mail import Message, Mail
 from dotenv import load_dotenv
@@ -15,6 +16,10 @@ app = Flask(__name__)
 load_dotenv()
 
 mail = Mail(app)
+=======
+import subprocess
+import re
+>>>>>>> 3bca881be83faca4a19ef6c6cdeb0f8021c5bf32
 
 LANDSAT_9_CATALOG_NUM = 49260
 LANDSAT_8_CATALOG_NUM = 39084
@@ -180,3 +185,57 @@ def setup_notification(latitude, longitude, landsat_number, notification_lead_ti
             'success': False,
             'error': str(e)
         }
+
+
+def find_closest_folder(folder_url, end_date):
+    """
+    Finds the folder within the specified S3 URL that has the acquisition date closest to 
+    (but not after) the provided end date.
+
+    Args:
+        folder_url (str): The URL to the S3 folder containing the Landsat acquisitions.
+        end_date (datetime): The latest allowable acquisition date.
+
+    Returns:
+        str: The name of the folder closest to the end date, or an error message if not found.
+    """
+    try:
+        # Run the AWS CLI command to list all folders in the directory
+        command = f"aws s3 ls {folder_url} --request-payer requester"
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            raise Exception(f"Error listing folder contents: {result.stderr}")
+
+        # Extract all folders and their acquisition dates
+        lines = result.stdout.splitlines()
+        folder_names = []
+        date_folder_mapping = {}
+
+        date_pattern = re.compile(r'LC\d{2}_L\d\w+_(\d{6})(\d{2})_\d{8}_\d{2}_T1')
+        
+        for line in lines:
+            if line.endswith('/'):
+                folder_name = line.split()[-1]
+                match = date_pattern.search(folder_name)
+                if match:
+                    date_str = match.group(1)
+                    acquisition_date = datetime.strptime(date_str, "%Y%m%d")
+                    folder_names.append(folder_name)
+                    date_folder_mapping[acquisition_date] = folder_name
+
+        # Filter folders with dates before or equal to the end_date
+        valid_dates = [date for date in date_folder_mapping.keys() if date <= end_date]
+
+        if not valid_dates:
+            return "No valid folder found before or on the given end date."
+
+        # Find the closest date to the end_date
+        closest_date = max(valid_dates)
+
+        # Return the folder name corresponding to the closest date
+        closest_folder = date_folder_mapping[closest_date]
+        return closest_folder
+
+    except Exception as e:
+        return str(e)
