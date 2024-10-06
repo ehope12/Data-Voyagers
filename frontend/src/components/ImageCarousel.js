@@ -29,6 +29,7 @@ const ImageCarousel = () => {
     }, []); // Empty dependency array means this runs once when the component mounts
 
     return (
+        <div className="w-full bg-slate-100">
         <div className="relative p-10 w-full max-w-md mx-auto">
             <div className="overflow-hidden rounded-lg shadow-lg">
                 <img
@@ -49,6 +50,7 @@ const ImageCarousel = () => {
             >
                 &#10095; {/* Right Arrow */}
             </button>
+        </div>
         </div>
     );
 };
