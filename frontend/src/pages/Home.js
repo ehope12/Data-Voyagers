@@ -3,10 +3,30 @@ import bgimg from "../assets/bgimg.png";
 import ImageCarousel from '../components/ImageCarousel';
 import CloudCoverageFilter from '../components/CloudCoverageFilter';
 import LandsatAcquisitionFilter from '../components/LandsatAquisition filter';
+import SpectralSignatureChart from '../components/SpectralSignatureChart';
 import NotificationSystem from '../components/NotificationSystem';
 import { ToastContainer } from 'react-toastify';
 
 const Home = () => {
+     // Initialize with placeholder data
+     const defaultData = {
+        spectralData: {
+            bands: ["B1", "B2", "B3", "B4", "B5", "B6", "B7"],
+            values: Array(7).fill(0) // Fill with zeros for placeholder
+        },
+        metadata: {
+            date: "N/A",
+            cloudCoverage: "N/A",
+            sceneID: "N/A",
+            sunElevation: "N/A",
+            sunAzimuth: "N/A",
+            sensorType: "N/A",
+            platform: "N/A",
+            qualityAssessment: "N/A"
+        }
+    };
+    
+    const [data, setData] = useState(defaultData);
     const [inputValue, setInputValue] = useState('');
     const [latValue, setLatValue] = useState('');
     const [lonValue, setLonValue] = useState('');
@@ -103,7 +123,27 @@ const Home = () => {
                 });
             });
         }
-    }, [selectedOption]);    
+    }, [selectedOption]);   
+    
+
+    //for the graph in point 10
+    useEffect(() => {
+        // Fetch the sample data from the JSON file
+        fetch('/sampleLandsatData.json') // Adjust the path as necessary
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(fetchedData => setData(fetchedData))
+            .catch(error => console.error('Error fetching data:', error));
+        // // Fetch your Landsat data from the backend
+        // fetch('http://localhost:5000/api/landsat-data') // Replace with your actual API endpoint
+        //     .then(response => response.json())
+        //     .then(data => setData(data))
+        //     .catch(error => console.error('Error fetching data:', error));
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center text-black">
@@ -243,7 +283,7 @@ const Home = () => {
    </div>
 
    {/* point 4 */}
-        <h1>This is the 3x3 grid including a total of 9 Landsat pixels centered on the user-defined location (target pixel).</h1>
+        <h1 className="">This is the 3x3 grid including a total of 9 Landsat pixels centered on the user-defined location (target pixel).</h1>
         
         {/* The image of the 3x3 grid including a total of 9 Landsat pixels centered on the user-defined location (target pixel). */}
 
@@ -263,7 +303,11 @@ const Home = () => {
     {/* point 9 - Access and acquire Landsat SR data values (and possibly display the surface temperature data from the thermal infrared bands) for the target pixel by leveraging cloud data catalogs and existing applications. */}
     
     {/* point 10 - Display a graph of the Landsat SR data along the spectrum (i.e., the spectral signature) in addition to scene metadata. */}
-    
+   
+    <div>
+            <SpectralSignatureChart spectralData={data.spectralData} metadata={data.metadata} />
+        </div>
+
     {/* point 11 - Allow users to download or share data in a useful format (e.g., csv). */}
      </div>
 
