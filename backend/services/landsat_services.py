@@ -1,6 +1,6 @@
 import requests
 from skyfield.api import EarthSatellite, load, Topos
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 import math
 import threading
 from email.mime.text import MIMEText
@@ -9,6 +9,9 @@ import os
 import smtplib
 import subprocess
 import re
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
 
 LANDSAT_9_CATALOG_NUM = 49260
 LANDSAT_8_CATALOG_NUM = 39084
@@ -123,6 +126,57 @@ def setup_notification(latitude, longitude, landsat_number, notification_lead_ti
         }
 
 
+def lat_lon_to_path_row(lat, lon):
+    driver = webdriver.Chrome()
+    driver.get('https://landsat.usgs.gov/landsat_acq#convertPathRow')
+    time.sleep(2)
+
+    lat_input = driver.find_element(By.ID, 'thelat')
+    lon_input = driver.find_element(By.ID, 'thelong')
+
+    lat_input.clear()
+    lat_input.send_keys(str(lat))
+    lon_input.clear()
+    lon_input.send_keys(str(lon))
+    
+    convert_button = driver.find_element(By.ID, 'convert')
+    convert_button.click()
+    time.sleep(1)
+
+    table_rows = driver.find_elements(By.XPATH, '//*[@id="convertTableRows"]/tr')
+    path_num = ""
+    row_num = ""
+    for row in table_rows:
+        columns = row.find_elements(By.TAG_NAME, 'td')
+        path_num = columns[0].text
+        row_num = columns[1].text
+
+    driver.quit()
+    return int(path_num), int(row_num)
+
+
+
+def get_loc_path(time, start_date, end_date, path, row):
+    # path, row = lat_lon_to_path_row(lat, lon)
+    path_3 = '%03d' % path
+    row_3 = '%03d' % row
+
+    now = datetime.datetime.now()
+    if (time == "Most Recent"):
+        loc_path = "s3://usgs-landsat/collection02/level-2/standard/oli-tirs/" + str(now.year) + "/" + str(path) + "/" + str(row) + "/"
+        return loc_path, now
+    
+    end_year = end_date[-4:]
+    enddate = date(int(end_date[-4:]), int(end_date[:2]), int(end_date[3:5]))
+    if (time == "Custom Range"):
+        loc_path = "s3://usgs-landsat/collection02/level-2/standard/oli-tirs/" + end_year + "/" + str(path) + "/" + str(row) + "/"
+        end = datetime.combine(enddate, datetime.min.time())
+        return loc_path, end
+
+
+
+
+
 def find_closest_folder(folder_url, end_date):
     """
     Finds the folder within the specified S3 URL that has the acquisition date closest to 
@@ -137,7 +191,7 @@ def find_closest_folder(folder_url, end_date):
     """
     try:
         # Run the AWS CLI command to list all folders in the directory
-        command = f"aws s3 ls {folder_url} --request-payer requester"
+        command = f"aws s3 ls {folder_url + '/'} --request-payer requester"
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         
         if result.returncode != 0:
@@ -175,3 +229,33 @@ def find_closest_folder(folder_url, end_date):
 
     except Exception as e:
         return str(e)
+    
+    
+    
+    
+def get_files(loc_path, file_path):
+    files = []
+    file = loc_path + "/" + file_path + file_path
+    file = file[:-1]
+
+    for i in range(1, 7):
+        sr_file = file + "_SR_B" + str(i) + ".TIF"
+        files.append(sr_file)
+    
+    st_file = file + "_ST_B10.TIF"
+    files.append(st_file)
+
+    return files
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
