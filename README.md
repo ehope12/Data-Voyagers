@@ -33,8 +33,8 @@ Frontend:
 
 ## Authors
 
-Emily Hsieh  
-[@EmilyHsieh](https://www.linkedin.com/in/emily-hsieh-6323bb23b/)
+Emily Hsieh [@EmilyHsieh](https://www.linkedin.com/in/emily-hsieh-6323bb23b/)
+Kshitij Jalan [@KshitijJalan](https://www.linkedin.com/in/kshitij-jalan)
 
 ## Version History
 
