@@ -64,14 +64,14 @@ def calculate_next_overpass(latitude, longitude, landsat_number, start_time = da
 def send_notification(landsat_number, overpass_time, notification_method):
     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
     
-    if notification_method == "desktop" or notification_method == "both":
+    if notification_method == "Desktop" or notification_method == "Both":
         notification.notify(
             title=f"Landsat {landsat_number} Overpass Alert",
             message=f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time).",
             timeout=10
         )
     
-    if notification_method == "email" or notification_method == "both":
+    if notification_method == "Email" or notification_method == "Both":
         try:
             subject = f"Landsat {landsat_number} Overpass Alert"
             body = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
@@ -88,16 +88,18 @@ def send_notification(landsat_number, overpass_time, notification_method):
             print(f"Failed to send email notification: {e}")
 
 # Function to set up a notification for the next overpass
-def setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method):
+def setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method, email):
     try:
         next_overpass = calculate_next_overpass(latitude, longitude, landsat_number)
+        print(f"Next overpass for Landsat {landsat_number} at latitude {latitude} and longitude {longitude}: {next_overpass}")
         if next_overpass:
             notification_time = next_overpass - timedelta(minutes=notification_lead_time_minutes)
             current_time = datetime.now(tz=timezone.utc)
             time_to_wait = (notification_time - current_time).total_seconds()
 
             if time_to_wait > 0:
-                threading.Timer(time_to_wait, send_notification, [landsat_number, next_overpass, notification_method]).start()
+                print(f"Scheduling notification for {notification_time}, waiting for {time_to_wait} seconds.") # Debugging
+                threading.Timer(time_to_wait, send_notification, [landsat_number, next_overpass, notification_method, email]).start()
                 return {
                     'success': True,
                     'message': f"Notification set for Landsat {landsat_number} overpass at {next_overpass} UTC, notification will be sent {notification_lead_time_minutes} minutes before via {notification_method}."

@@ -34,10 +34,19 @@ def setup_notification_route():
         latitude = float(data['latitude'])
         longitude = float(data['longitude'])
         landsat_number = int(data['landsat_number'])
-        notification_lead_time_minutes = int(data['notification_lead_time_minutes'])
+        # notification_lead_time_minutes = int(data['notification_lead_time_minutes'])
+        time_unit = data.get('timeUnit', 'minutes')
+        lead_time_value = int(data.get('lead_time_value', 0))
+        if time_unit == 'hours':
+            notification_lead_time_minutes = lead_time_value * 60
+        elif time_unit == 'days':
+            notification_lead_time_minutes = lead_time_value * 1440
+        else:
+            notification_lead_time_minutes = lead_time_value
         notification_method = data['notification_method']
+        email = data.get('email')
 
-        result = setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method)
+        result = setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method, email)
         return jsonify(result)
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})

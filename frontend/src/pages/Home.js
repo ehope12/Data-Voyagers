@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import bgimg from "../assets/bgimg.png";
 import ImageCarousel from '../moreOnUI/ImageCarousel';
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const Home = () => {
     const [inputValue, setInputValue] = useState('');
@@ -11,10 +14,11 @@ const Home = () => {
     const [latLon, setLatLon] = useState('');
     const [selectedOption, setSelectedOption] = useState('Location Input');
     const [pinCoordinates, setPinCoordinates] = useState(null);
+    const [date, setDate] = useState(new Date());
+    const [timeUnit, setTimeUnit] = useState('');
+    const [email, setEmail] = useState('');
 
     const mapRef = useRef(null);
-
-    const [timeUnit, setTimeUnit] = useState('');
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
@@ -39,6 +43,41 @@ const Home = () => {
         setSelectedOption(e.target.value);
         setOutputValue('');
         setLatLon('');
+    };
+
+    const handleNotificationSubmit = async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            date: date.toISOString(),
+            notificationMethod,
+            timeUnit,
+            inputValue,
+            latitude: latValue,
+            longitude: lonValue,
+            landsat_number: 9, // ADJUST THIS
+            email: email,
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/landsat/setup_notification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            setOutputValue(data.message || 'Notification setup successfully!');
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setOutputValue('Error submitting notification setup.');
+        }
+    };
+
+    const handleDateChange = (selectedDate) => {
+        setDate(selectedDate);
     };
 
     const handleSubmit = async (e) => {
@@ -115,8 +154,8 @@ const Home = () => {
         <div className="min-h-screen flex flex-col justify-center items-center text-black">
             <img src={bgimg} alt="placeholder" className="pb-10"></img>
             <div className="bg-space bg-cover bg-center py-16 flex flex-col justify-center items-center text-center px-5 md:px-10 lg:px-20">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Explore the Universe!</h1>
-                <p className="text-lg md:text-xl mb-8 drop-shadow-lg">Enter your space data and unlock the mysteries of the cosmos.</p>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Landsat Reflectance Data!</h1>
+                <p className="text-lg md:text-xl mb-8 drop-shadow-lg">On the fly and at your fingertips.</p>
                 <button
                     onClick={() => document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' })}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
@@ -124,7 +163,7 @@ const Home = () => {
                     Get Started
                 </button>
             </div>
-            <div className="bg-slate-100 py-10 font-semibold px-10 space-y-5">
+            <div className="relative z-10 bg-slate-100 py-10 font-semibold px-10 space-y-5">
                 <h1 className="text-blue-950 font-bold text-xl">Fun Fact!</h1>
                 <p>Free and open data from Landsat offers over fifty years of satellite-based Earth observations 
                 to engage members of the public and enable them to learn how Earth is changing. </p>
@@ -132,7 +171,7 @@ const Home = () => {
             </div> 
             
             {/* Input Section 1*/}
-            <div id="input-section" className="bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
+            <div id="input-section" className="relative z-10 bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 {/* Dropdown to select input method */}
                 <label className="block mb-4 text-lg text-white">
                     Select Input Method:
@@ -233,7 +272,7 @@ const Home = () => {
             </div>
         
             {/* Output Section 1 */}
-            <div id="input-section" className="bg-green-400 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
+            {/* <div id="input-section" className="relative z-10 bg-green-400 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 <form onSubmit={handleSubmit}>
                     <label className="block mb-4">
                         <span className="text-lg text-white">A Landsat satellite is passing over the defined target location at:</span>
@@ -241,91 +280,96 @@ const Home = () => {
                     </label>
                     
                 </form>
-            </div>
+            </div> */}
 
         {/* Input Section 2 */}
-        <div id="input-section" className="bg-gray-800 rounded-lg p-6  shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
-           <form onSubmit={handleSubmit}>
-            <label className="block ">
-                <span className="text-lg text-white">Enter Your Space Data:</span> 
-             </label> 
-        
-            {/* Input Section with Float Input Field and 2 Dropdowns*/}
-            <div id="input-section" className="bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
-                <form onSubmit={handleSubmit}>
-                    {/* Plain Input Field */}
-                    <label className="block mb-4">
-                        <span className="text-lg text-white">Enter a Value:</span>
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                            placeholder="Enter a value..."
-                        />
-                    </label>
+        <div id="input-section" className="relative z-10 bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
+            <form onSubmit={handleNotificationSubmit}>
+                {/* Calendar (DatePicker) */}
+                <label className="block mb-4">
+                    <span className="text-lg text-white">Select Notification Date & Time:</span>
+                    <DatePicker
+                        selected={date}
+                        onChange={handleDateChange}
+                        showTimeSelect
+                        dateFormat="Pp"
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                    />
+                </label>
 
-                    {/* Dropdown for Time Unit */}
-                    <label className="block mb-4">
-                        <span className="text-lg text-white">Select Time Unit:</span>
-                        <select
-                            value={timeUnit}
-                            onChange={handleTimeUnitChange}
-                            className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                            
-                        >
-                            <option value="" disabled >Select a time unit</option>
-                            <option value="hours">Hours</option>
-                            <option value="days">Days</option>
-                            <option value="weeks">Weeks</option>
-                            <option value="months">Months</option>
-                            <option value="years">Years</option>
-                        </select>
-                    </label>
-                        {/* Dropdown for Notification Method */}
-                    <label className="block mb-4">
-                        <span className="text-lg text-white">How would you like to receive notifications?</span>
-                        <select
-                            value={notificationMethod}
-                            onChange={handleNotificationMethodChange}
-                            className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
-                            style={{ position: 'relative', zIndex: 10 }}
-                        >
-                            <option className="" value="" disabled>Select a notification method</option>
-                            <option value="email">Email</option>
-                            <option value="sms">SMS</option>
-                            <option value="push">Push Notification</option>
-                        </select>
-                    </label>
-                    
-                    </form>
-                    <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full transition duration-300"
-            >
-                Submit
-            </button>
+                {/* Plain Input Field */}
+                {/* <label className="block mb-4">
+                    <span className="text-lg text-white">Enter a Value:</span>
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                        placeholder="Enter a value..."
+                    />
+                </label> */}
 
-        {outputValue && (
-            <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                <h2 className="text-xl font-bold">Output:</h2>
-                <p className="mt-2">{outputValue}</p>
-            </div>
-        )}
-        {latLon && (
-            <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                <h2 className="text-xl font-bold">Coordinates:</h2>
-                <p className="mt-2">{latLon}</p>
-            </div>
-        )}
-       
-    </div>
-</form>
-   </div>
+                {/* Dropdown for Time Unit */}
+                {/* <label className="block mb-4">
+                    <span className="text-lg text-white">Select Time Unit:</span>
+                    <select
+                        value={timeUnit}
+                        onChange={(e) => setTimeUnit(e.target.value)}
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                    >
+                        <option value="" disabled>Select a time unit</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="months">Months</option>
+                        <option value="years">Years</option>
+                    </select>
+                </label> */}
+
+                {/* Dropdown for Notification Method */}
+                <label className="block mb-4">
+                    <span className="text-lg text-white">How would you like to receive notifications?</span>
+                    <select
+                        value={notificationMethod}
+                        onChange={(e) => setNotificationMethod(e.target.value)}
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                    >
+                        <option value="" disabled>Select a notification method</option>
+                        <option value="Email">Email</option>
+                        <option value="Desktop">Desktop</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </label>
+
+                <label className="block mb-4">
+                    <span className="text-lg text-white">Email Address:</span>
+                    <input
+                        type="email"
+                        value={email} // Assuming you have a state variable for email
+                        onChange={(e) => setEmail(e.target.value)} // Assuming setEmail is your state setter
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                        required
+                    />
+                </label>
+
+                <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full transition duration-300"
+                >
+                    Submit
+                </button>
+            </form>
+
+            {outputValue && (
+                <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
+                    <h2 className="text-xl font-bold">Output:</h2>
+                    <p className="mt-2">{outputValue}</p>
+                </div>
+            )}
+        </div>
 
    <ImageCarousel />
      </div>
-
     );
 };
 
