@@ -7,32 +7,21 @@ from email.mime.text import MIMEText
 from plyer import notification
 import os
 import smtplib
-<<<<<<< HEAD
-from flask import Flask
-from flask_mail import Message, Mail
-from dotenv import load_dotenv
-
-app = Flask(__name__)
-load_dotenv()
-
-mail = Mail(app)
-=======
 import subprocess
 import re
->>>>>>> 3bca881be83faca4a19ef6c6cdeb0f8021c5bf32
 
 LANDSAT_9_CATALOG_NUM = 49260
 LANDSAT_8_CATALOG_NUM = 39084
 COVERAGE_OF_EARTH_IN_DAYS = 16
-# EMAIL_SENDER = "landsat.notification@gmail.com"
-# EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-# EMAIL_RECEIVER = "flameisntlame@gmail.com"
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use Gmail SMTP server
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL_SENDER')  # Your email
-app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')  # Your email password (use environment variable)
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+EMAIL_SENDER = "landsat.notification@gmail.com"
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_RECEIVER = "flameisntlame@gmail.com"
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use Gmail SMTP server
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USERNAME'] = os.getenv('EMAIL_SENDER')  # Your email
+# app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')  # Your email password (use environment variable)
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
 
 def send_email_notification(email, landsat_number, overpass_time, notification_method):
     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
@@ -107,51 +96,51 @@ def calculate_next_overpass(latitude, longitude, landsat_number, start_time=None
         raise RuntimeError(f"Error calculating overpass: {e}")
 
 # Function to send a notification
-def send_notification(email, landsat_number, overpass_time, notification_method):
-    local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
-    subject = f"Landsat {landsat_number} Overpass Alert"
-    message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
-
-    # Send Desktop notification
-    if notification_method == "Desktop" or notification_method == "Both":
-        notification.notify(
-            title=subject,
-            message=message,
-            timeout=10
-        )
-
-    # Send Email notification
-    if notification_method == "Email" or notification_method == "Both":
-        msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
-        msg.body = message
-        mail.send(msg)
-        print("Email notification sent successfully.")
-
-# def send_notification(landsat_number, overpass_time, notification_method):
+# def send_notification(email, landsat_number, overpass_time, notification_method):
 #     local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
-    
+#     subject = f"Landsat {landsat_number} Overpass Alert"
+#     message = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+
+#     # Send Desktop notification
 #     if notification_method == "Desktop" or notification_method == "Both":
 #         notification.notify(
-#             title=f"Landsat {landsat_number} Overpass Alert",
-#             message=f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time).",
+#             title=subject,
+#             message=message,
 #             timeout=10
 #         )
-    
-#     if notification_method == "Email" or notification_method == "Both":
-#         try:
-#             subject = f"Landsat {landsat_number} Overpass Alert"
-#             body = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
-#             msg = MIMEText(body)
-#             msg['Subject'] = subject
-#             msg['From'] = EMAIL_SENDER
-#             msg['To'] = EMAIL_RECEIVER
 
-#             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-#                 server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-#                 server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
-#             print("Email notification sent successfully.")
-#         except Exception as e:
-#             print(f"Failed to send email notification: {e}")
+#     # Send Email notification
+#     if notification_method == "Email" or notification_method == "Both":
+#         msg = Message(subject, sender=os.getenv('EMAIL_SENDER'), recipients=[email])
+#         msg.body = message
+#         mail.send(msg)
+#         print("Email notification sent successfully.")
+
+def send_notification(landsat_number, overpass_time, notification_method):
+    local_overpass_time_str = overpass_time.astimezone().strftime('%Y-%m-%d %I:%M %p')
+    
+    if notification_method == "Desktop" or notification_method == "Both":
+        notification.notify(
+            title=f"Landsat {landsat_number} Overpass Alert",
+            message=f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time).",
+            timeout=10
+        )
+    
+    if notification_method == "Email" or notification_method == "Both":
+        try:
+            subject = f"Landsat {landsat_number} Overpass Alert"
+            body = f"Landsat {landsat_number} will pass over at {local_overpass_time_str} (local time)."
+            msg = MIMEText(body)
+            msg['Subject'] = subject
+            msg['From'] = EMAIL_SENDER
+            msg['To'] = EMAIL_RECEIVER
+
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+                server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+                server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
+            print("Email notification sent successfully.")
+        except Exception as e:
+            print(f"Failed to send email notification: {e}")
 
 # Function to set up a notification for the next overpass
 def setup_notification(latitude, longitude, landsat_number, notification_lead_time_minutes, notification_method, email):

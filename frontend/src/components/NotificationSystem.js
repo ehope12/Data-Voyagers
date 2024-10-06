@@ -65,7 +65,7 @@ const NotificationSystem = () => {
                     toast.info(
                         <div>
                             <strong>{`Landsat ${landsatNumber} Overpass Alert`}</strong>
-                            <p>{`Landsat ${landsatNumber} will pass over at ${localOverpassTimeStr} (local time).`}</p>
+                            <p>{`Landsat ${landsatNumber} will pass over at [TIME] (local time).`}</p>
                         </div>
                     ); // Trigger a toast notification with detailed info
                 }, delay);
@@ -80,26 +80,25 @@ const NotificationSystem = () => {
 
     return (
         <div className="max-w-md mx-auto p-4">
-            <form onSubmit={handleNotificationSubmit} className="bg-white shadow-lg rounded-lg p-6 space-y-6">
+            <form onSubmit={handleNotificationSubmit} className="bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 <div className="text-center">
-                    <h2 className="text-2xl font-semibold text-gray-700 mb-4">Set Notification Method</h2>
-                    <p className="text-gray-500">Choose between email, desktop notification, and both.</p>
+                    <h2 className="text-2xl font-semibold text-white mb-4">Set Notification Method</h2>
+                    <p className="text-white">Choose between email, desktop notification, or both.</p>
                 </div>
                 <label className="block mb-4">
-                    <span className="text-lg text-white">Select Notification Date & Time:</span>
                     <DatePicker
                         selected={date}
                         onChange={handleDateChange}
                         showTimeSelect
                         dateFormat="Pp"
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                     />
                 </label>
                 <label className="block mb-4">
                     <select
                         value={notificationMethod}
                         onChange={(e) => setNotificationMethod(e.target.value)}
-                        className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                        className="mt-2 block w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                     >
                         <option value="" disabled>Select a notification method</option>
                         <option value="Email">Email</option>
@@ -131,8 +130,8 @@ const NotificationSystem = () => {
 
             {outputValue && (
                 <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                    <h2 className="text-xl font-bold">Output:</h2>
-                    <p className="mt-2">{outputValue}</p>
+                    <h2 className="text-xl font-bold text-white">Output:</h2>
+                    <p className="mt-2 text-white">{outputValue}</p>
                 </div>
             )}
             <ToastContainer /> {/* Add ToastContainer here */}

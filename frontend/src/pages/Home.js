@@ -150,8 +150,8 @@ const Home = () => {
         <div className="min-h-screen flex flex-col justify-center items-center text-black">
             <img src={bgimg} alt="placeholder" className="pb-10"></img>
             <div className="bg-space bg-cover bg-center py-16 flex flex-col justify-center items-center text-center px-5 md:px-10 lg:px-20">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Explore the Universe!</h1>
-                <p className="text-lg md:text-xl mb-8 drop-shadow-lg">Enter your space data and unlock the mysteries of the cosmos.</p>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Landsat Reflectance Data!</h1>
+                <p className="text-lg md:text-xl mb-8 drop-shadow-lg">On the fly and at your fingertips.</p>
                 <button
                     onClick={() => document.getElementById('input-section').scrollIntoView({ behavior: 'smooth' })}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
@@ -160,10 +160,8 @@ const Home = () => {
                 </button>
             </div>
             <div className="bg-slate-100 py-10 font-semibold px-10 space-y-5">
-                <h1 className="text-blue-950 font-bold text-xl">Fun Fact!</h1>
-                <p>Free and open data from Landsat offers over fifty years of satellite-based Earth observations 
-                to engage members of the public and enable them to learn how Earth is changing. </p>
-                <p>To know when Landsat will pass over a certain land area.</p>
+                <h1 className="text-blue-950 font-bold text-xl">Our Mission</h1>
+                <p>Landsat missions have provided the longest continuous dataset of remotely sensed measurements of Earth’s land surface. Comparing ground-based spectral measurements with Landsat Surface Reflectance (SR) data collected at the same time can facilitate experiential learning, encourage scientific exploration with satellite data, foster interdisciplinary and spatial thinking skills, and empower individuals to become informed global citizens. But to compare ground-based measurements with Landsat data, you need to know when Landsat will be passing over a specific land area, and then be able to access the Landsat data collected at that place and time. Our goal is to integrate this specialized and labor-intensive task into a single, cohesive application. </p>
             </div> 
             
             {/* Input Section 1*/}
@@ -191,7 +189,7 @@ const Home = () => {
                                 type="text"
                                 value={inputValue}
                                 onChange={handleInputChange}
-                                className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                                className="text-white mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                                 placeholder="Type here..."
                             />
                         </label>
@@ -212,7 +210,7 @@ const Home = () => {
                                 type="text"
                                 value={latValue}
                                 onChange={handleLatChange}
-                                className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                                className="text-white mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                                 placeholder="Enter latitude..."
                             />
                         </label>
@@ -222,7 +220,7 @@ const Home = () => {
                                 type="text"
                                 value={lonValue}
                                 onChange={handleLonChange}
-                                className="mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
+                                className="text-white mt-2 block w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500"
                                 placeholder="Enter longitude..."
                             />
                         </label>
@@ -243,7 +241,7 @@ const Home = () => {
                         {/* Display Pin Coordinates */}
                         {pinCoordinates && (
                             <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                                <h2 className="text-xl font-bold text-white">Coordinates:</h2>
+                                <h2 className="text-xl font-bold text-white">Gathering Path and Row From</h2>
                                 <p className="mt-2 text-white">
                                     Latitude: {pinCoordinates.lat}, Longitude: {pinCoordinates.lng}
                                 </p>
@@ -255,20 +253,20 @@ const Home = () => {
                 {/* Output */}
                 {outputValue && (
                     <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold">Output:</h2>
-                        <p className="mt-2">{outputValue}</p>
+                        <h2 className="text-xl font-bold text-white">Gathering Path and Row From</h2>
+                        <p className="mt-2 text-white">{outputValue}</p>
                     </div>
                 )}
                 {latLon && (
                     <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-                        <h2 className="text-xl font-bold">Coordinates:</h2>
-                        <p className="mt-2">{latLon}</p>
+                        <h2 className="text-xl font-bold text-white">Gathering Path and Row From</h2>
+                        <p className="mt-2 text-white">{latLon}</p>
                     </div>
                 )}
             </div>
         
             {/* Output Section 1 */}
-            <div id="input-section" className="bg-green-400 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
+            <div id="input-section" className="bg-purple-600 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 <form onSubmit={handleSubmit}>
                     <label className="block mb-4">
                         <span className="text-lg text-white">A Landsat satellite is passing over the defined target location at:</span>
@@ -278,6 +276,7 @@ const Home = () => {
                 </form>
             </div>
 
+        <NotificationSystem/>
         {/* Input Section 2 */}
        {/* Deleted the notification input */}
    <div className="py-10 w-full">
@@ -299,9 +298,6 @@ const Home = () => {
 
    {/* point 7 - Permit users to specify whether they want access to only the most recent Landsat acquisition or acquisitions spanning a particular time span. */}
     <LandsatAcquisitionFilter/>
-
-    <NotificationSystem/>
-    {/* <ToastContainer /> */}
 
     {/* point 8 - Acquire scene metadata such as acquisition satellite, date, time, latitude/longitude, Worldwide Reference System path and row, percent cloud cover, and image quality. */}
 
