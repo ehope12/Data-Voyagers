@@ -11,7 +11,14 @@ const CloudCoverageFilter = () => {
         event.preventDefault(); // Prevent page reload on form submit
         console.log(`Filtering data with cloud coverage less than ${threshold}%`);
         // Add your logic to fetch or filter the data based on this threshold
+        
+    
     };
+
+
+
+
+
 
     return (
         <div className="max-w-md mx-auto p-4">

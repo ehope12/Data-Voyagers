@@ -17,6 +17,26 @@ const LandsatAcquisitionFilter = () => {
         } else {
             console.log(`Fetching Landsat acquisitions from ${startDate} to ${endDate}`);
         }
+
+        const data = {
+            startDate,
+            endDate
+        };
+    
+        fetch('https://your-backend-url.com/api/landsat-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data); // Handle the response from the backend
+        })
+        .catch((error) => {
+            console.error('Error:', error); // Handle any errors
+        });
     };
 
     return (
