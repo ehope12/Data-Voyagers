@@ -7,6 +7,9 @@ aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 aws_region = os.getenv('AWS_DEFAULT_REGION')
 
+
+
+
 def get_cloud_cover_percentage(folder_url):
     """
     Retrieves the cloud cover percentage from the MTL file of a Landsat acquisition folder in S3.
@@ -67,9 +70,3 @@ def get_cloud_cover_percentage(folder_url):
     except Exception as e:
         return str(e)
 
-
-# Example of how to use the function
-if __name__ == "__main__":
-    folder_url = "s3://usgs-landsat/collection02/level-1/standard/oli-tirs/2023/233/095/LC09_L1TP_233095_20231228_20231228_02_T1/"
-    cloud_cover = get_cloud_cover_percentage(folder_url)
-    print("Cloud Cover Percentage:", cloud_cover)
