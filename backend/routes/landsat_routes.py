@@ -75,3 +75,17 @@ def setup_notification_route():
         
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+
+
+### TODO: Add a route for getting array of 3x3 grid with values being approximate surface reflectance to be used by the frontend visualization around the user target path,row
+    ## Function creates 3x3 grid around target path,row
+    ## calculates cloud cover percentage for each pixel, return all pixels as cloud cover percentage or -1 to represent cloud cover above desired threshold
+    ## takes array and calculates average surface reflectance for each pixel with desired cloud cover percentage
+    ## returns 3x3 for frontend to turn into 3x3 grid showing relative surface reflectance values on single color gradient
+    
+    
+## TODO: Add a route for the surface reflectance spectrum representation of the target path,row, returning a dictionary with band names as keys and average surface reflectance values as values
+    ## Calls upon get file method to gather 7 band tif files for respective color bands
+    ## Calls get bandwise surface reflectance method to calculate average surface reflectance for each band
+    ## Returns dictionary with band names as keys and average surface reflectance values as values
