@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import bgimg from "../assets/bgimg.png";
+import ImageCarousel from '../moreOnUI/ImageCarousel';
 
 const Home = () => {
     const [inputValue, setInputValue] = useState('');
@@ -123,7 +124,13 @@ const Home = () => {
                     Get Started
                 </button>
             </div>
-
+            <div className="bg-slate-100 py-10 font-semibold px-10 space-y-5">
+                <h1 className="text-blue-950 font-bold text-xl">Fun Fact!</h1>
+                <p>Free and open data from Landsat offers over fifty years of satellite-based Earth observations 
+                to engage members of the public and enable them to learn how Earth is changing. </p>
+                <p>To know when Landsat will pass over a certain land area.</p>
+            </div> 
+            
             {/* Input Section 1*/}
             <div id="input-section" className="bg-gray-800 rounded-lg p-6 shadow-lg w-full max-w-md mt-10 px-5 md:px-8">
                 {/* Dropdown to select input method */}
@@ -315,6 +322,8 @@ const Home = () => {
     </div>
 </form>
    </div>
+
+   <ImageCarousel />
      </div>
 
     );
