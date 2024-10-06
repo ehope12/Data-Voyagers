@@ -12,6 +12,8 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import rasterio
+import numpy as np
 
 LANDSAT_9_CATALOG_NUM = 49260
 LANDSAT_8_CATALOG_NUM = 39084
