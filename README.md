@@ -18,6 +18,9 @@ Backend:
 * Skyfield
 * Plyer  
 Frontend:
+* React
+* JavaScript
+* Tailwind CSS
 * NodeJS
 * Axios
 
@@ -38,6 +41,8 @@ Emily Hsieh [@EmilyHsieh](https://www.linkedin.com/in/emily-hsieh-6323bb23b/)
 Kshitij Jalan [@KshitijJalan](https://www.linkedin.com/in/kshitij-jalan)
 
 Sohum Shah [@SohumShah](https://www.linkedin.com/in/sohum1094/)
+
+Aditi Dharmadhikari [@AditiDharmadhikari](https://www.linkedin.com/in/aditi-d4/)
 
 ## Version History
 
