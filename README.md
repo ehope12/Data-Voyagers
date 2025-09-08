@@ -44,6 +44,8 @@ Sohum Shah [@SohumShah](https://www.linkedin.com/in/sohum1094/)
 
 Aditi Dharmadhikari [@AditiDharmadhikari](https://www.linkedin.com/in/aditi-d4/)
 
+Simra Faisal [@SimraFaisal](www.linkedin.com/in/simra-faisal-4857a7219)
+
 ## Version History
 
 * 0.1
