@@ -6,6 +6,9 @@ Connecting people and Landsat data.
 Pluto's Revenge is a team at NASA's 2024 Space Apps hackathon competing in the "Landsat Reflectance Data: On the Fly and at Your Fingertips" challenge. We are creating a website to allow individuals easy access to Landsat data in order to facilitate data collection and exploration.  
 Our website allows users to define a target location, receive notifications when landsat is over that location, and access and display the relevant data.
 
+### Presentation
+https://docs.google.com/presentation/d/1krxaqLqi6PsThvUjH4MDHAdv84KjZPT1aGyW1tWDGiI/edit?slide=id.g308c2427a09_0_37#slide=id.g308c2427a09_0_37
+
 ## Getting Started
 
 ### Dependencies
